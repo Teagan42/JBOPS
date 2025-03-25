@@ -1,7 +1,7 @@
 import argparse
 import asyncio
 import json
-from datetime import UTC, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -58,13 +58,13 @@ async def refresh_patron_token(
     if not config.get("patreon_client_secret"):
         raise ValueError("No client secret found in config.")
     expires_at = (
-        datetime.strptime(
-            config.get("patreon_expires_at", datetime.now(UTC)), "%Y-%m-%dT%H:%M:%S.%fZ"
+        datetime.fromisoformat(
+            config.get("patreon_expires_at", datetime.now(timezone.utc))
         )
         if config.get("patreon_expires_at")
         else None
     )
-    if expires_at and datetime.now(UTC) < (expires_at - timedelta(minutes=1)):
+    if expires_at and datetime.now(timezone.utc) < (expires_at - timedelta(minutes=1)):
         print("Token is still valid. No need to refresh.")
         return config["patreon_access_token"]
 
@@ -85,7 +85,7 @@ async def refresh_patron_token(
     config["patreon_refresh_token"] = json_data.get("refresh_token", None)
     expires_in = json_data.get("expires_in", 0)
     config["patreon_expires_at"] = (
-        datetime.now(UTC) + timedelta(seconds=expires_in)
+        datetime.now(timezone.utc) + timedelta(seconds=expires_in)
     ).isoformat()
     await save_config(config_dir, config)
     return response.json()["access_token"]
