@@ -48,7 +48,7 @@ async def save_config(config_dir: str, config: Dict[str, Any]):
 
 
 async def refresh_patron_token(
-    session: httpx.AsyncClient, config: Dict[str, Any]
+    session: httpx.AsyncClient, config_dir: str, config: Dict[str, Any]
 ) -> str:
     """Refresh the Patreon access token using the refresh token."""
     if not config.get("patreon_refresh_token"):
@@ -84,7 +84,10 @@ async def refresh_patron_token(
     config["patreon_access_token"] = json_data.get("access_token", None)
     config["patreon_refresh_token"] = json_data.get("refresh_token", None)
     expires_in = json_data.get("expires_in", 0)
-    config["patreon_expires_at"] = datetime.now(UTC) + timedelta(seconds=expires_in)
+    config["patreon_expires_at"] = (
+        datetime.now(UTC) + timedelta(seconds=expires_in)
+    ).isoformat()
+    await save_config(config_dir, config)
     return response.json()["access_token"]
 
 
@@ -221,7 +224,7 @@ async def enforce_quota(
     try:
         config = await load_config(config_dir)
         async with httpx.AsyncClient() as client:
-            patreon_token = await refresh_patron_token(client, config)
+            patreon_token = await refresh_patron_token(client, config_dir, config)
 
             if await is_active_patron(client, patreon_token, user_email):
                 print("User is a Patron. Let them feast.")
