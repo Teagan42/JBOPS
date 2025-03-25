@@ -149,7 +149,7 @@ async def get_weekly_watch_time(
     r.raise_for_status()
     history = r.json()["response"]["data"]["data"]
     return sum(
-        item.get("duration", 0)
+        int(item.get("play_duration", 0))
         for item in history
         if datetime.fromtimestamp(item["date"], tz=timezone.utc) >= start_of_week
     )
