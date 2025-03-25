@@ -57,7 +57,13 @@ async def refresh_patron_token(
         raise ValueError("No client ID found in config.")
     if not config.get("patreon_client_secret"):
         raise ValueError("No client secret found in config.")
-    expires_at = config.get("patreon_expires_at")
+    expires_at = (
+        datetime.strptime(
+            config.get("patreon_expires_at", datetime.now(UTC)), "%Y-%m-%dT%H:%M:%S.%fZ"
+        )
+        if config.get("patreon_expires_at")
+        else None
+    )
     if expires_at and datetime.now(UTC) < (expires_at - timedelta(minutes=1)):
         print("Token is still valid. No need to refresh.")
         return config["patreon_access_token"]
