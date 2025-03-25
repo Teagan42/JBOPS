@@ -105,21 +105,15 @@ async def is_active_patron(
         params={
             "include": "user",
             "fields[user]": "email",
-            "fields[member]": "patron_status",
+            "fields[member]": "patron_status,email",
         },
     )
     r.raise_for_status()
     data = r.json()
 
-    included_users = {
-        item["id"]: item["attributes"]["email"]
-        for item in data.get("included", [])
-        if item["type"] == "user"
-    }
-
     for member in data["data"]:
-        user_id = member["relationships"]["user"]["data"]["id"]
-        email = included_users.get(user_id)
+        # member["relationships"]["user"]["data"]["id"]
+        email = member["attributes"].get("email")
         status = member["attributes"].get("patron_status")
 
         if email and email.lower() == user_email.lower() and status == "active_patron":
