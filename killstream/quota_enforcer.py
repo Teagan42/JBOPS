@@ -15,17 +15,17 @@ def parse_args():
     parser = argparse.ArgumentParser(
         description="Enforces weekly screen time quota for Plex users via Tautulli + Patreon."
     )
-    parser.add_argument("config_dir", help="Directory containing config.json")
-    parser.add_argument("user_id", type=int, help="Tautulli user ID")
-    parser.add_argument("user_email", help="Email address of the Plex user")
-    parser.add_argument("session_id", help="Tautulli session ID for the user")
+    parser.add_argument("--config_dir", help="Directory containing config.json")
+    parser.add_argument("--user_id", type=int, help="Tautulli user ID")
+    parser.add_argument("--user_email", help="Email address of the Plex user")
+    parser.add_argument("--session_id", help="Tautulli session ID for the user")
     parser.add_argument(
-        "remaining_duration_sec",
+        "--remaining_duration_sec",
         type=int,
         help="Remaining duration of media being watched (in seconds)",
     )
     parser.add_argument(
-        "cutoff_message", help="Message to display when killing session"
+        "--cutoff_message", help="Message to display when killing session"
     )
 
     return parser.parse_args()
