@@ -8,3 +8,4 @@ urllib3
 aiofiles==24.1.0
 httpx==0.28.1
 pydantic==2.10.6
+aiofile==3.9.0

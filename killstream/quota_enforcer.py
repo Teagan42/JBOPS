@@ -18,7 +18,7 @@ def parse_args():
     parser.add_argument("config_dir", help="Directory containing config.json")
     parser.add_argument("user_id", type=int, help="Tautulli user ID")
     parser.add_argument("user_email", help="Email address of the Plex user")
-    parser.add_argument("session_id", type=int, help="Tautulli session ID for the user")
+    parser.add_argument("session_id", help="Tautulli session ID for the user")
     parser.add_argument(
         "remaining_duration_sec",
         type=int,
