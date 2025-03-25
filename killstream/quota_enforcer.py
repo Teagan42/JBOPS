@@ -98,8 +98,16 @@ async def is_active_patron(
     headers = {"Authorization": f"Bearer {access_token}"}
 
     # Request all memberships (you may need to paginate if you have too many donors, you popular beast)
-    url = "https://www.patreon.com/api/oauth2/v2/campaigns/2900318/members?include=user&fields[user]=email&fields[member]=patron_status"
-    r = await session.get(url, headers=headers)
+    url = "https://www.patreon.com/api/oauth2/v2/campaigns/2900318/members"
+    r = await session.get(
+        url,
+        headers=headers,
+        params={
+            "include": "user",
+            "fields[user]": "email",
+            "fields[member]": "patron_status",
+        },
+    )
     r.raise_for_status()
     data = r.json()
 
